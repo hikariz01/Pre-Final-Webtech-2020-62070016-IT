@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Pre-Final 2</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+
+<body>
+<?php
+$url = "./ezquiz.json";
+$response = file_get_contents($url);
+$result = json_decode($response, true);
+$song_arr = [];
+?>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center my-2">ระบุคำค้นหา</h1>
+            <form action="" method="get">
+                <div class="form-group row mt-4">
+                    <div class="col-10">
+                        <input type="text" class="form-control" name="search">
+                    </div>
+                    <div class="col-2">
+                        <button class="btn btn-block btn-primary" type="submit">ค้นหา</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <?php
+        foreach ($result['tracks']['items'] as $song) {
+            if (isset($_GET['search'])) {
+                if ($_GET['search'] != "") {
+                    if ((strpos(strtolower($song['album']['name']), strtolower($_GET['search'])) !== false) || strpos(strtolower($song['album']['artists'][0]['name']), strtolower($_GET['search'])) !== false) {
+                        array_push($song_arr, 1);
+                        ?>
+                        <div class="col-md-4 my-3">
+                            <div class="card">
+                                <img src="<?= $song['album']['images']['0']['url'] ?>" alt="" class="card-img-top">
+                                <div class="card-body">
+                                    <h3 class="card-title"><?= $song['album']['name'] ?></h3>
+                                    <div class="card-text">
+                                        <p>Artist : <?= $song['album']['artists'][0]['name'] ?></p>
+                                        <p>Release Date : <?= $song['album']['release_date'] ?></p>
+                                        <p>Available : <?= count($song['album']['available_markets']) ?> countries</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                }
+            } else {
+                ?>
+                <div class="col-md-4 my-3">
+                    <div class="card">
+                        <img src="<?= $song['album']['images']['0']['url'] ?>" alt="" class="card-img-top">
+                        <div class="card-body">
+                            <h3 class="card-title"><?= $song['album']['name'] ?></h3>
+                            <div class="card-text">
+                                <p>Artist : <?= $song['album']['artists'][0]['name'] ?></p>
+                                <p>Release Date : <?= $song['album']['release_date'] ?></p>
+                                <p>Available : <?= count($song['album']['available_markets']) ?> countries</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <?php
+            }
+        }
+        ?>
+    </div>
+    <?php
+    if (isset($_GET['search'])) {
+        ?>
+        <div class="row">
+            <div class="col-12">
+                <h4 class="text-center">เจอผลลัพธ์ : <?= count($song_arr) ?> รายการ</h4>
+            </div>
+        </div>
+        <?php
+    }
+    ?>
+</div>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
